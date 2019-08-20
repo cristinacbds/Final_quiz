@@ -1,14 +1,14 @@
 import React from "react";
-function BidDetails(props) {
+
+export default function BidDetails(props) {
+    const { bid, created_at } = props;
+
     return (
         <div>
             <p>
-                {props.price}
-                <br />
-                <small>{props.created_at}</small>
+                ${props.bid} on {props.created_at}
             </p>
         </div>
     );
 }
 
-export { BidDetails };

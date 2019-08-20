@@ -1,9 +1,11 @@
 import React from "react";
-import { BidDetails } from "./BidDetails";
+import  BidDetails  from "./BidDetails";
 
 export function BidList(props) {
-    const { bids } = props;
-
+    let { bids } = props;
+    if (!bids) {
+        bids = [];
+    }
     return (
         <ul
             style={{
@@ -14,7 +16,8 @@ export function BidList(props) {
             {bids.map(bid => (
                 <li key={bid.id}>
                     <BidDetails
-                        {...bid}
+                        bid={bid.bid}
+                        created_at={bid.created_at}
                     />
                 </li>
             ))}

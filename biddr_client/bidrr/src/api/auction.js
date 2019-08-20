@@ -3,8 +3,6 @@ import { BASE_URL } from "../config";
 export const Auction = {
     all() {
         return fetch(`${BASE_URL}/auctions`, {
-            // Makes include cookies in request and response for
-            // cross-origin requests.
             credentials: "include"
         }).then(res => res.json());
     },
@@ -12,8 +10,8 @@ export const Auction = {
         const res = await fetch(`${BASE_URL}/auctions/${id}`, {
             credentials: "include"
         });
-        const subject = await res.json();
-        return subject;
+        const auction = await res.json();
+        return auction;
     },
     create(params) {
         return fetch(`${BASE_URL}/auctions`, {

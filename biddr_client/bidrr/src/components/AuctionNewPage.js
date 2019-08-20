@@ -1,52 +1,88 @@
 import React from 'react';
-import {
-    Button,
-    Form,
-    Grid,
-    Header,
-    Segment,
-    Input,
-} from 'semantic-ui-react';
 import { Auction } from '../api/auction';
 
 
-export default function AuctionNewPage(props) {
-    const { onCreate = () => { } } = props;
-    function handleSubmit(event) {
-        event.preventDefault();
-        const { currentTarget } = event;
-        const formData = new FormData(currentTarget);
-        const createParams = {
-            title: formData.get('title'),
-            description: formData.get('description'),
-            price: formData.get('price'),
-            ends_at: formData.get('ends_at'),
+export default class AuctionNewPage extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            newAuctionData: {
+                title: '',
+                description: '',
+                price: '',
+                ends_at: ''
+            },
         };
-        Auction.create(createParams).then(res => {
-            if (res.id) {
-                onCreate();
-                props.history.push(`/auctions/${res.id}`)
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        const newData = { [event.target.name]: event.target.value };
+        this.setState({
+            newAuctionData: {
+                ...this.state.newAuctionData,
+                ...newData,
             }
-        });
-    };
-    return (
-        <Grid centered columns={2}>
-            <Grid.Column>
-                <Header as="h2" textAlign="center">
-                    New
-                </Header>
-                <Segment>
-                    <Form onSubmit={handleSubmit} size="large">
-                        <Form.Input placeholder="Title" control={Input} name='title' required />
-                        <Form.Input placeholder="Description" control={Input} name='description' required />
-                        <Form.Input placeholder="Price" control={Input} name='price' type="number"  />
-                        <Form.Input placeholder="Ends at" control={Input} name='ends_at' type="date"  />
-                        <Button type='submit' color="blue" fluid size="large">
-                            Save
-                    </Button>
-                    </Form>
-                </Segment>
-            </Grid.Column>
-        </Grid>
-    )
-};
+        })
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        Auction.create(this.state.newAuctionData).then(data => {
+            if (!data.id) {
+                this.setState({
+                    errors: data.errors
+                });
+            } else {
+                this.props.history.push(`/auctions/${data.id}`);
+            }
+        })
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <div>
+                    <label htmlFor='title'>Title</label>
+                    <input
+                        type='text'
+                        name='title'
+                        value={this.state.newAuctionData.title}
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <div>
+                    <label htmlFor='description'>Description</label>
+                    <input
+                        type='text'
+                        name='description'
+                        value={this.state.newAuctionData.description}
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <div>
+                    <label htmlFor='price'>Price</label>
+                    <input
+                        type='number'
+                        name='price'
+                        value={this.state.newAuctionData.price}
+                        onChange={this.handleChange}
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor='ends_at'>Ends at</label>
+                    <input
+                        type='date'
+                        name='ends_at'
+                        value={this.state.newAuctionData.ends_at}
+                        onChange={this.handleChange}
+                    />
+                </div>
+                <input type='submit' value='Create Auction' />
+            </form>
+        );
+    }
+}

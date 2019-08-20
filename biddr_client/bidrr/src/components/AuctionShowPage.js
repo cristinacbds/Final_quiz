@@ -9,7 +9,9 @@ export class AuctionShowPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            auction: null
+            auction: {
+                bids: []
+            },
         };
     }
 
@@ -18,7 +20,7 @@ export class AuctionShowPage extends Component {
 
         Auction.one(id).then(auction => {
             this.setState({
-                auction
+                auction: auction
             });
         });
     }
@@ -30,7 +32,7 @@ export class AuctionShowPage extends Component {
                 />
 
                 <h2>Previous Bids</h2>
-    
+                <BidList bids={this.state.auction.bids}/>
             </main>
         );
     }

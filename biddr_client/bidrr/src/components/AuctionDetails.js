@@ -1,8 +1,4 @@
 import React from "react";
-// Whenever you use JSX in file, you must do the above
-// import otherwise the converted JSX tags into
-// React.createElement(...) won't work because
-// `React` will be undefined.
 
 export function AuctionDetails(props) {
     return (
