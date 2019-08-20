@@ -1,30 +1,28 @@
 class Api::V1::BidsController < Api::ApplicationController
-    before_action :set_auction
-    before_action :set_bid, only: [:show]
+    
+    before_action :authenticate_user!
     
     def index
         render json: @auction.bids
     end
 
     def create
-        @auction.bids.create(bid_params)
-        render json: @auction.bids.last
+        auction = Auction.find params[:auction_id]
+        bid = Bid.new bids_params
+        bid.user = current_user
+        bid.auction = auction
+        if bid.save
+            render json: {id: bid.id}, status: 200
+        else
+            render json: {errors: bid.errors}, status: 422
+        end
+    end
     end
 
-    def show
-        render json: @auction
-    end
 
     private
-    def bid_params
+    def bids_params
         params.require(:bid).permit(:bid)
     end
 
-    def set_auction
-        @auction = Auction.find(params[:auction_id])
-    end
-
-    def set_course
-        @bid = @auction.bids.find_by!(id: params[:id])
-    end
 end
