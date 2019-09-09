@@ -29,5 +29,16 @@ module BiddrApi
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+    config.middleware.insert_before(0, Rack::Cors) do
+      allow do
+        origins("localhost:3030")
+        resource(
+          "/api/*",
+          headers: :any,
+          credentials: true,
+          methods: [:get, :post, :delete, :patch, :put, :option]
+        )
+      end
+    end
   end
 end
